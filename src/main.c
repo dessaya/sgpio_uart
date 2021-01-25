@@ -107,6 +107,8 @@ int c_entry(void)
     static uint8_t key;
 
     boardInit();
+    printf("board init OK\n");
+
     CGU_Init();
 
     /*
@@ -127,6 +129,8 @@ int c_entry(void)
     if(status == ERROR) return (-1);
     SGPIO_UART_Tx_Init(mySGPIO.TxPin, mySGPIO.TxSlice);
     SGPIO_UART_Rx_Init(mySGPIO.RxPin, mySGPIO.RxSlice);
+
+    printf("SGPIO init OK\n");
 
     // print welcome screen
     print_menu(mySGPIO.TxSlice);
