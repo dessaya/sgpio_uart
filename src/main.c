@@ -30,8 +30,11 @@
  **********************************************************************/
 #include <string.h>
 #include <stdio.h>
+#include "board.h"
+#include "sgpio.h"
+#include "sapi.h"
 #include "lpc43xx_cgu.h"
-#include "lpc43xx_scu.h"
+//#include "lpc43xx_scu.h"
 #include "sgpio_uart.h"
 
 /* Example group ----------------------------------------------------------- */
@@ -78,8 +81,8 @@ void print_menu(uint32_t SGPIO_TxSlice)
  **********************************************************************/
 void SGPIO_Borad_config(void)
 {//for MCB4300 board using UART0
-    scu_pinmux(0x2 ,0 , MD_BUK, FUNC0); 	// P2.0 : UART0 Tx with SGPIO4(slice C) dout
-    scu_pinmux(0x2 ,1 , MD_PLN|MD_EZI|MD_ZI, FUNC0); 	// P2.1 : UART0 Rx with SGPIO5(slice K) din
+    Chip_SCU_PinMux(0x2 , 0, MD_BUK, FUNC0); 	// P2.0 : UART0 Tx with SGPIO4(slice C) dout
+    Chip_SCU_PinMux(0x2 , 1, MD_PLN|MD_EZI|MD_ZI, FUNC0); 	// P2.1 : UART0 Rx with SGPIO5(slice K) din
 
     mySGPIO.TxPin	= SGPIO_4;
     mySGPIO.TxSlice = C;
@@ -103,7 +106,7 @@ int c_entry(void)
     uint8_t buffer[50], buf[50], i;
     static uint8_t key;
 
-    SystemInit();
+    boardInit();
     CGU_Init();
 
     /*

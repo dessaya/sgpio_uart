@@ -41,7 +41,6 @@
 #define lpc43xx_CGU_H_
 
 /* Includes ------------------------------------------------------------------- */
-#include "lpc43xx.h"
 #include "lpc_types.h"
 
 #ifdef __cplusplus

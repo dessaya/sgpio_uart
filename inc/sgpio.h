@@ -24,7 +24,7 @@
 #ifndef	__SGPIO_H__
 #define __SGPIO_H__
 
-#include "LPC43xx.h"
+//#include "LPC43xx.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -161,6 +161,7 @@ static SGPIO_SliceMuxConfig SGPIO_makeSliceMuxConfig (
 	SMC_ParallelMode	parallelMode,
 	SMC_InvQualifier	invQualifier)  __attribute__((always_inline));
 
+__attribute__((always_inline)) inline
 static SGPIO_SliceMuxConfig SGPIO_makeSliceMuxConfig (
 	SMC_MatchMode 		matchMode, 
 	SMC_ClkCaptureMode	clkCaptureMode,
@@ -287,6 +288,7 @@ static SGPIO_MuxConfig SGPIO_makeMuxConfig (
 	MC_ConcatEnable 	concatEnable,
 	MC_ConcatOrder 	concatOrder)  __attribute__((always_inline));
 
+__attribute__((always_inline)) inline
 static SGPIO_SliceMuxConfig SGPIO_makeMuxConfig (
 	MC_ExtClkEnable 	extClkEnable,
 	MC_ClkSrcPin 		clkSrcPin,
@@ -355,6 +357,7 @@ static SGPIO_OutMuxConfig SGPIO_makeOutMuxConfig (
 	OMC_PinOeCfg 	pinOeCfg
 )  __attribute__((always_inline));
 				
+__attribute__((always_inline)) inline
 static SGPIO_OutMuxConfig SGPIO_makeOutMuxConfig (
 	OMC_PinOutCfg 	pinOutCfg,
 	OMC_PinOeCfg 	pinOeCfg)
@@ -436,19 +439,21 @@ static void SGPIO_readDataShadowReg(const SGPIO_Slice sliceId, const uint8_t wor
 
 /* function to configure the out mux register */
 
+__attribute__((always_inline)) inline
 static void SGPIO_configMuxReg (const SGPIO_Slice sliceId, const SGPIO_MuxConfig config) {
 	
 	LPC_SGPIO->SGPIO_MUX_CFG[sliceId] = config;	
 
 }
 
-
+__attribute__((always_inline)) inline
 static void SGPIO_configSliceMuxReg (const SGPIO_Slice sliceId, const SGPIO_MuxConfig config) {
 	
 	LPC_SGPIO->SLICE_MUX_CFG[sliceId] = config;	
 
 }
 
+__attribute__((always_inline)) inline
 static void SGPIO_configOutMuxReg (const SGPIO_Pin pinId, const SGPIO_MuxConfig config) {
 	
 	LPC_SGPIO->OUT_MUX_CFG[pinId] = config;	
@@ -458,30 +463,35 @@ static void SGPIO_configOutMuxReg (const SGPIO_Pin pinId, const SGPIO_MuxConfig 
 
 #define GPIO_OE_MASK (0x70)
 
+__attribute__((always_inline)) inline
 static void SGPIO_setOeReg (const SGPIO_Pin pinId, const SGPIO_OutMuxConfig config) {
 	
 	if((config & GPIO_OE_MASK) == OMC_GPIO_OE) 
 		LPC_SGPIO->GPIO_OENREG |= (0x1 << pinId);
 }
 
+__attribute__((always_inline)) inline
 static void SGPIO_clearOeReg (const SGPIO_Pin pinId) {
 	
 	LPC_SGPIO->GPIO_OENREG &= (~(0x1 << pinId));
 }
 
 
+__attribute__((always_inline)) inline
 static void SGPIO_disableSlices(const uint32_t sliceMask) {
 	
 	LPC_SGPIO->CTRL_ENABLED	 &= (~sliceMask);
 
 }
 
+__attribute__((always_inline)) inline
 static void SGPIO_clearDisableSlices(const uint32_t sliceMask) {
 	
 	LPC_SGPIO->CTRL_DISABLED &= (~sliceMask);
 
 }
 
+__attribute__((always_inline)) inline
 static void SGPIO_enableSlices(const bool stop, const uint32_t sliceMask) {
 	
 	LPC_SGPIO->CTRL_ENABLED	 |= sliceMask;
@@ -489,6 +499,7 @@ static void SGPIO_enableSlices(const bool stop, const uint32_t sliceMask) {
 
 }
 
+__attribute__((always_inline)) inline
 static void SGPIO_disableSlice(SGPIO_Slice sliceId) {
 	
 	LPC_SGPIO->CTRL_ENABLED	 &= (~(1 << sliceId));
@@ -496,6 +507,7 @@ static void SGPIO_disableSlice(SGPIO_Slice sliceId) {
 
 }
 
+__attribute__((always_inline)) inline
 static void SGPIO_enableSlice(const bool stop, const SGPIO_Slice sliceId) {
 	
 	LPC_SGPIO->CTRL_ENABLED |= (1 << sliceId);
@@ -516,6 +528,7 @@ typedef enum emuStatus { EMU_OK = 0, EMU_INVALID_ID, ERR_SGPIO_BITPOS, ERR_SGPIO
 
 extern emuStatus emuError;
 
+__attribute__((always_inline)) inline
 static void SGPIO_setCountReg(const SGPIO_Slice sliceId, const uint16_t param) {
 	
 	/* static range check, shall be compiled out */
@@ -528,6 +541,7 @@ static void SGPIO_setCountReg(const SGPIO_Slice sliceId, const uint16_t param) {
 	LPC_SGPIO->COUNT[sliceId] = (uint32_t) param & 0xFFF;
 }
 
+__attribute__((always_inline)) inline
 static void SGPIO_setCountReloadReg(const SGPIO_Slice sliceId, const uint16_t param) {
 	
 	/* static range check, shall be compiled out when included in the same module */
@@ -539,6 +553,7 @@ static void SGPIO_setCountReloadReg(const SGPIO_Slice sliceId, const uint16_t pa
 	LPC_SGPIO->PRESET[sliceId] = ((uint32_t)param & 0x1FFF) - 1;
 }
 
+__attribute__((always_inline)) inline
 static void SGPIO_setBitCountReg(const SGPIO_Slice sliceId, const uint16_t param) {
 	
 	/* static range check, shall be compiled out when included in the same module */
@@ -550,22 +565,26 @@ static void SGPIO_setBitCountReg(const SGPIO_Slice sliceId, const uint16_t param
 	LPC_SGPIO->POS[sliceId] = ((((uint32_t)param & 0x1FF) - 1) << 8) | ((uint32_t)param & 0x1FF) - 1;
 }
 
+__attribute__((always_inline)) inline
 static void SGPIO_writeDataReg(const SGPIO_Slice sliceId, const uint32_t param) {
 	
 	LPC_SGPIO->REG[sliceId] = param;
 }
 
+__attribute__((always_inline)) inline
 static void SGPIO_readDataReg(const SGPIO_Slice sliceId, const uint8_t wordLength, uint32_t* param) {
 	
 	*((uint32_t*)param) = LPC_SGPIO->REG[sliceId] >> (32 - (wordLength));
 
 }
 
+__attribute__((always_inline)) inline
 static void SGPIO_writeDataShadowReg(const SGPIO_Slice sliceId, const uint32_t param) {
 	
 	LPC_SGPIO->REG_SS[sliceId] = (uint32_t) param;
 }
 
+__attribute__((always_inline)) inline
 static void SGPIO_readDataShadowReg(const SGPIO_Slice sliceId, const uint8_t wordLength, uint32_t* param) {
 	
 	*((uint32_t*)param) = LPC_SGPIO->REG_SS[sliceId] >> (32 - (wordLength));

@@ -36,6 +36,7 @@
 
 /* Includes ------------------------------------------------------------------- */
 #include "sgpio_uart.h"
+#include "board.h"
 #include "lpc43xx_cgu.h"
 
 #ifdef SGPIO_UART
@@ -77,10 +78,10 @@ static uint32_t FrameLen;
  *******************************************************************************/
 void SGPIO_UART_ConfigStructInit(SGPIO_UART_CFG_Type *UART_InitStruct)
 {
-    UART_InitStruct->Baud_rate = UART_BAUDRATE_9600;
-    UART_InitStruct->Databits = UART_DATABIT_8;
-    UART_InitStruct->Parity = UART_PARITY_NONE;
-    UART_InitStruct->Stopbits = UART_STOPBIT_1;
+    UART_InitStruct->Baud_rate = SGPIO_UART_BAUDRATE_9600;
+    UART_InitStruct->Databits = SGPIO_UART_DATABIT_8;
+    UART_InitStruct->Parity = SGPIO_UART_PARITY_NONE;
+    UART_InitStruct->Stopbits = SGPIO_UART_STOPBIT_1;
 
     FrameLen = 1 + UART_InitStruct->Databits + UART_InitStruct->Parity + UART_InitStruct->Stopbits;
 }
@@ -163,7 +164,7 @@ void SGPIO_UART_Tx_Init(int SGPIO_TxPin, int SGPIO_slice)
     LPC_SGPIO->REG_SS[SGPIO_slice] = 0xffffffff;	
 
     //setup interrupt
-    NVIC_EnableIRQ(SGPIO_IINT_IRQn);
+    NVIC_EnableIRQ(SGPIO_INT_IRQn);
     SGPIO_UART_EnTxIRQ(SGPIO_slice);
     TxFrame = 0;
 
@@ -220,7 +221,7 @@ void SGPIO_UART_Rx_Init(int SGPIO_RxPin, int SGPIO_slice)
 
     //setup interrupt
     LPC_SGPIO->CLR_EN_0 = 1<<SGPIO_slice;
-    NVIC_EnableIRQ(SGPIO_IINT_IRQn);
+    NVIC_EnableIRQ(SGPIO_INT_IRQn);
     RxStarted = 0;
     RxFrame = 0;
 
@@ -243,7 +244,7 @@ void SGPIO_UART_Setmode(int SGPIO_slice, FunctionalState NewState)
     if (NewState == ENABLE)
     {
         LPC_SGPIO->CTRL_ENABLED |= 1<<SGPIO_slice;
-    }	else {
+    } else {
         LPC_SGPIO->CTRL_ENABLED &= (~(1<<SGPIO_slice));
     }
 }

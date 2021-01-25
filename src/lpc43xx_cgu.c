@@ -37,7 +37,8 @@
 
 /* Includes ------------------------------------------------------------------- */
 #include "lpc_types.h"
-#include "lpc43xx_scu.h"
+#include "board.h"
+//#include "lpc43xx_scu.h"
 #include "lpc43xx_cgu.h"
 
 /** This define used to fix mistake when run with IAR compiler */
@@ -527,10 +528,10 @@ uint32_t CGU_EnableEntity(CGU_ENTITY_T ClockEntity, uint32_t en){
 		for(i = 0;i<1000000;i++);
 
 	}else if(ClockEntity == CGU_CLKSRC_ENET_RX_CLK){
-		scu_pinmux(0xC ,0 , MD_PLN, FUNC3);
+		Chip_SCU_PinMux(0xC ,0 , MD_PLN, FUNC3);
 
 	}else if(ClockEntity == CGU_CLKSRC_ENET_TX_CLK){
-		scu_pinmux(0x1 ,19 , MD_PLN, FUNC0);
+		Chip_SCU_PinMux(0x1 ,19 , MD_PLN, FUNC0);
 
 	}else if(ClockEntity == CGU_CLKSRC_GP_CLKIN){
 
@@ -553,10 +554,10 @@ uint32_t CGU_EnableEntity(CGU_ENTITY_T ClockEntity, uint32_t en){
 			CGU_ADDRESS32(CGU_CGU_ADDR,RegOffset) &= ~CGU_CTRL_EN_MASK;
 			/*if PLL is selected check if it is locked */
 			if(ClockEntity == CGU_CLKSRC_PLL0){
-				while((LPC_CGU->PLL0USB_STAT&1) == 0x0);
+				while((LPC_CGU->PLL[CGU_USB_PLL].PLL_STAT&1) == 0x0);
 			}
 			if(ClockEntity == CGU_CLKSRC_PLL0_AUDIO){
-				while((LPC_CGU->PLL0AUDIO_STAT&1) == 0x0);
+				while((LPC_CGU->PLL[CGU_AUDIO_PLL].PLL_STAT&1) == 0x0);
 			}
 			if(ClockEntity == CGU_CLKSRC_PLL1){
 				while((LPC_CGU->PLL1_STAT&1) == 0x0);
@@ -659,12 +660,12 @@ uint32_t CGU_EntityConnect(CGU_ENTITY_T ClockSource, CGU_ENTITY_T ClockEntity){
  **********************************************************************/
 uint32_t CGU_SetPLL0(void){
 	// Setup PLL550 to generate 480MHz from 12 MHz crystal
-	LPC_CGU->PLL0USB_CTRL |= 1; 	// Power down PLL
+	LPC_CGU->PLL[CGU_USB_PLL].PLL_CTRL |= 1; 	// Power down PLL
 						//	P			N
-	LPC_CGU->PLL0USB_NP_DIV = (98<<0) | (514<<12);
+	LPC_CGU->PLL[CGU_USB_PLL].PLL_NP_DIV = (98<<0) | (514<<12);
 						//	SELP	SELI	SELR	MDEC
-	LPC_CGU->PLL0USB_MDIV = (0xB<<17)|(0x10<<22)|(0<<28)|(0x7FFA<<0);
-	LPC_CGU->PLL0USB_CTRL =(CGU_CLKSRC_XTAL_OSC<<24) | (0x3<<2) | (1<<4);
+	LPC_CGU->PLL[CGU_USB_PLL].PLL_MDIV = (0xB<<17)|(0x10<<22)|(0<<28)|(0x7FFA<<0);
+	LPC_CGU->PLL[CGU_USB_PLL].PLL_CTRL =(CGU_CLKSRC_XTAL_OSC<<24) | (0x3<<2) | (1<<4);
 	return CGU_ERROR_SUCCESS;
 }
 
@@ -681,33 +682,33 @@ uint32_t CGU_SetPLL0audio(void){
     * disable free running mode, disable bandsel,
     * enable up limmiter, disable bypass
     */
-    LPC_CGU->PLL0AUDIO_CTRL = (6 << 24)   /* source = XTAL OSC 12 MHz */
+    LPC_CGU->PLL[CGU_AUDIO_PLL].PLL_CTRL = (6 << 24)   /* source = XTAL OSC 12 MHz */
                       | _BIT(0); /* power down */
     /* PLL should be set to 512fs rate 512 * 48000 =  24576000 Hz */
     /* set mdec register */
 #if 1   	// results from gcc program
-	LPC_CGU->PLL0AUDIO_MDIV = 0x23e34d3;
-	LPC_CGU->PLL0AUDIO_NP_DIV = 0x3f00e;
-    LPC_CGU->PLL0AUDIO_CTRL = (6 << 24)   /* source = XTAL OSC 12 MHz */
+	LPC_CGU->PLL[CGU_AUDIO_PLL].PLL_MDIV = 0x23e34d3;
+	LPC_CGU->PLL[CGU_AUDIO_PLL].PLL_NP_DIV = 0x3f00e;
+    LPC_CGU->PLL[CGU_AUDIO_PLL].PLL_CTRL = (6 << 24)   /* source = XTAL OSC 12 MHz */
 					  | (6<< 12)		  // fractional divider off and bypassed
                       | _BIT(4);   /* CLKEN */
 #else
-    LPC_CGU->PLL0AUDIO_MDIV = (0 << 28)  /* SELR */
+    LPC_CGU->PLL[CGU_AUDIO_PLL].PLL_MDIV = (0 << 28)  /* SELR */
         | (40 << 22)   /* SELI */
         | (31 << 17)   /* SELP */
         | 11372;       /* MDEC */  
     /* set ndec, pdec register */
-    LPC_CGU->PLL0AUDIO_NP_DIV = (22 << 12)       /* ndec */
+    LPC_CGU->PLL[CGU_AUDIO_PLL].PLL_NP_DIV = (22 << 12)       /* ndec */
         | (10);               /* pdec */  
     
     /* set fraction divider register. [21:15] = m, [14:0] = fractional value */
-    LPC_CGU->PLL0AUDIO_FRAC = (86 << 15) | 0x1B7;
-    LPC_CGU->PLL0AUDIO_CTRL = (6 << 24)   /* source = XTAL OSC 12 MHz */
+    LPC_CGU->PLL[CGU_AUDIO_PLL].PLL_FRAC = (86 << 15) | 0x1B7;
+    LPC_CGU->PLL[CGU_AUDIO_PLL].PLL_CTRL = (6 << 24)   /* source = XTAL OSC 12 MHz */
                       | _BIT(12)   /* enable SD modulator to update mdec*/
                       | _BIT(4);   /* CLKEN */
 #endif
     /* wait for lock */
-    while (!(LPC_CGU->PLL0AUDIO_STAT & 1)); 
+    while (!(LPC_CGU->PLL[CGU_AUDIO_PLL].PLL_STAT & 1)); 
      
 	return CGU_ERROR_SUCCESS;
 }

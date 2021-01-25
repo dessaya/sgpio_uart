@@ -40,9 +40,9 @@
 #define __SGPIO_UART_H
 
 /* Includes ------------------------------------------------------------------- */
-#include "lpc43xx.h"
+//#include "LPC43xx.h"
 #include "lpc_types.h"
-#include "sgpio.h"
+//#include "sgpio.h"
 
 
 #ifdef __cplusplus
@@ -88,63 +88,63 @@ extern "C"
      * @brief UART enumeration
      **********************************************************************/
     typedef enum {
-        UART_BAUDRATE_9600 = 9600,     		
-        UART_BAUDRATE_19200 = 19200,		     			
-        UART_BAUDRATE_38400 = 38400,     
-        UART_BAUDRATE_57600 = 57600,
-        UART_BAUDRATE_115200 = 115200
-    } UART_BAUDRATE_Type;
+        SGPIO_UART_BAUDRATE_9600 = 9600,     		
+        SGPIO_UART_BAUDRATE_19200 = 19200,		     			
+        SGPIO_UART_BAUDRATE_38400 = 38400,     
+        SGPIO_UART_BAUDRATE_57600 = 57600,
+        SGPIO_UART_BAUDRATE_115200 = 115200
+    } SGPIO_UART_BAUDRATE_Type;
 
     /**
      * @brief UART Databit type definitions
      */
     typedef enum {
-        UART_DATABIT_5		= 5,     		/*!< UART 5 bit data mode */
-        UART_DATABIT_6,		     			/*!< UART 6 bit data mode */
-        UART_DATABIT_7,		     			/*!< UART 7 bit data mode */
-        UART_DATABIT_8		     			/*!< UART 8 bit data mode */
-    } UART_DATABIT_Type;
+        SGPIO_UART_DATABIT_5		= 5,     		/*!< UART 5 bit data mode */
+        SGPIO_UART_DATABIT_6,		     			/*!< UART 6 bit data mode */
+        SGPIO_UART_DATABIT_7,		     			/*!< UART 7 bit data mode */
+        SGPIO_UART_DATABIT_8		     			/*!< UART 8 bit data mode */
+    } SGPIO_UART_DATABIT_Type;
 
     /**
      * @brief UART Stop bit type definitions
      */
     typedef enum {
-        UART_STOPBIT_1		= (1),   					/*!< UART 1 Stop Bits Select */
-        UART_STOPBIT_2		 							/*!< UART Two Stop Bits Select */
-    } UART_STOPBIT_Type;
+        SGPIO_UART_STOPBIT_1		= (1),   					/*!< UART 1 Stop Bits Select */
+        SGPIO_UART_STOPBIT_2		 							/*!< UART Two Stop Bits Select */
+    } SGPIO_UART_STOPBIT_Type;
 
     /**
      * @brief UART Parity type definitions
      */
     typedef enum {
-        UART_PARITY_NONE 	= 0,					/*!< No parity */
-        UART_PARITY_ODD = 1,	 						/*!< Odd parity */
-        UART_PARITY_EVEN = 1, 							/*!< Even parity */
-        UART_PARITY_SP_1	= 1, 							/*!< Forced "1" stick parity */
-        UART_PARITY_SP_0 = 1							/*!< Forced "0" stick parity */
-    } UART_PARITY_Type;
+        SGPIO_UART_PARITY_NONE 	= 0,					/*!< No parity */
+        SGPIO_UART_PARITY_ODD = 1,	 						/*!< Odd parity */
+        SGPIO_UART_PARITY_EVEN = 1, 							/*!< Even parity */
+        SGPIO_UART_PARITY_SP_1	= 1, 							/*!< Forced "1" stick parity */
+        SGPIO_UART_PARITY_SP_0 = 1							/*!< Forced "0" stick parity */
+    } SGPIO_UART_PARITY_Type;
 
     /********************************************************************//**
      * @brief UART Configuration Structure definition
      **********************************************************************/
     typedef struct {
         uint32_t Baud_rate;   		/**< UART baud rate */
-        UART_PARITY_Type Parity;    	/**< Parity selection, should be:
-                                          - UART_PARITY_NONE: No parity
-                                          - UART_PARITY_ODD: Odd parity
-                                          - UART_PARITY_EVEN: Even parity
-                                          - UART_PARITY_SP_1: Forced "1" stick parity
-                                          - UART_PARITY_SP_0: Forced "0" stick parity
+        SGPIO_UART_PARITY_Type Parity;    	/**< Parity selection, should be:
+                                          - SGPIO_UART_PARITY_NONE: No parity
+                                          - SGPIO_UART_PARITY_ODD: Odd parity
+                                          - SGPIO_UART_PARITY_EVEN: Even parity
+                                          - SGPIO_UART_PARITY_SP_1: Forced "1" stick parity
+                                          - SGPIO_UART_PARITY_SP_0: Forced "0" stick parity
                                           */
-        UART_DATABIT_Type Databits;   /**< Number of data bits, should be:
-                                        - UART_DATABIT_5: UART 5 bit data mode
-                                        - UART_DATABIT_6: UART 6 bit data mode
-                                        - UART_DATABIT_7: UART 7 bit data mode
-                                        - UART_DATABIT_8: UART 8 bit data mode
+        SGPIO_UART_DATABIT_Type Databits;   /**< Number of data bits, should be:
+                                        - SGPIO_UART_DATABIT_5: UART 5 bit data mode
+                                        - SGPIO_UART_DATABIT_6: UART 6 bit data mode
+                                        - SGPIO_UART_DATABIT_7: UART 7 bit data mode
+                                        - SGPIO_UART_DATABIT_8: UART 8 bit data mode
                                         */
-        UART_STOPBIT_Type Stopbits;   /**< Number of stop bits, should be:
-                                        - UART_STOPBIT_1: UART 1 Stop Bits Select
-                                        - UART_STOPBIT_2: UART 2 Stop Bits Select
+        SGPIO_UART_STOPBIT_Type Stopbits;   /**< Number of stop bits, should be:
+                                        - SGPIO_UART_STOPBIT_1: UART 1 Stop Bits Select
+                                        - SGPIO_UART_STOPBIT_2: UART 2 Stop Bits Select
                                         */
     } SGPIO_UART_CFG_Type;
 
