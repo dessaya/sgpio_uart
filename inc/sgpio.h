@@ -30,25 +30,24 @@
 
 
 /* SGPIO slice definitions */
-typedef enum SGPIO_Slice { 
-	A = 0, 
-	B, 
-	C, 
-	D, 
-	E, 
-	F, 
-	G, 
-	H, 
-	I, 
-	J, 
-	K, 
-	L, 
-	M, 
-	N, 
-	O, 
-	P, 
-	NUM_SGPIO_SLICES 
-	
+typedef enum SGPIO_Slice {
+	SGPIO_SLICE_A = 0,
+	SGPIO_SLICE_B,
+	SGPIO_SLICE_C,
+	SGPIO_SLICE_D,
+	SGPIO_SLICE_E,
+	SGPIO_SLICE_F,
+	SGPIO_SLICE_G,
+	SGPIO_SLICE_H,
+	SGPIO_SLICE_I,
+	SGPIO_SLICE_J,
+	SGPIO_SLICE_K,
+	SGPIO_SLICE_L,
+	SGPIO_SLICE_M,
+	SGPIO_SLICE_N,
+	SGPIO_SLICE_O,
+	SGPIO_SLICE_P,
+	NUM_SGPIO_SLICES,
 } SGPIO_Slice;
 
 /* SGPIO pin definitions */

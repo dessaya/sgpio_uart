@@ -80,14 +80,23 @@ void print_menu(uint32_t SGPIO_TxSlice)
  * @return 		None
  **********************************************************************/
 void SGPIO_Borad_config(void)
-{//for MCB4300 board using UART0
-    Chip_SCU_PinMux(0x2 , 0, MD_BUK, FUNC0); 	// P2.0 : UART0 Tx with SGPIO4(slice C) dout
-    Chip_SCU_PinMux(0x2 , 1, MD_PLN|MD_EZI|MD_ZI, FUNC0); 	// P2.1 : UART0 Rx with SGPIO5(slice K) din
+{
+    // P4.2 : UART Tx with SGPIO8(slice B) dout (T_FIL2)
+    Chip_SCU_PinMux(0x4 , 2, MD_BUK, FUNC7);
+    // P4.3 : UART Rx with SGPIO9(slice M) din (T_FIL3)
+    Chip_SCU_PinMux(0x4 , 3, MD_PLN|MD_EZI|MD_ZI, FUNC7);
 
-    mySGPIO.TxPin	= SGPIO_4;
-    mySGPIO.TxSlice = C;
-    mySGPIO.RxPin	= SGPIO_5;
-    mySGPIO.RxSlice = K;
+    mySGPIO.TxPin	= SGPIO_8;
+    mySGPIO.TxSlice = SGPIO_SLICE_B;
+    mySGPIO.RxPin	= SGPIO_9;
+    mySGPIO.RxSlice = SGPIO_SLICE_M;
+}
+
+void readGPIOAndPrint() {
+    while (uartRxReady(UART_GPIO)) {
+        uint8_t c = uartRxRead(UART_GPIO);
+        putchar(c);
+    }
 }
 
 /*-------------------------MAIN FUNCTION------------------------------*/
@@ -107,14 +116,17 @@ int c_entry(void)
     static uint8_t key;
 
     boardInit();
-    printf("board init OK\n");
-
     CGU_Init();
 
     /*
      * Configurate SGPIO pin/slice connect
      */
     SGPIO_Borad_config();
+
+    uartConfig(UART_USB, 115200);  // UART2 on USB DEBUG
+    uartConfig(UART_GPIO, 9600); // UART0 on GPIO1(TX) GPIO2(RX)
+
+    printf("board init OK\n");
 
     /* Initialize UART Configuration parameter structure to default state:
      * Baudrate = 9600bps
@@ -135,6 +147,8 @@ int c_entry(void)
     // print welcome screen
     print_menu(mySGPIO.TxSlice);
 
+    readGPIOAndPrint();
+
     //Enable SGPIO UART Rx
     SGPIO_UART_Setmode(mySGPIO.RxSlice, ENABLE);
 
@@ -149,7 +163,7 @@ int c_entry(void)
             len = SGPIO_UART_Receive(mySGPIO.RxSlice, buffer, 1);
             key = buffer[0];
         }
-        if(key == '1') 
+        if(key == '1')
         {
             SGPIO_UART_Send(mySGPIO.TxSlice, menu5, sizeof(menu5));
         }
@@ -235,24 +249,6 @@ int main(void)
     return c_entry();
 }
 
-
-#ifdef  DEBUG
-/*******************************************************************************
- * @brief		Reports the name of the source file and the source line number
- * 				where the CHECK_PARAM error has occurred.
- * @param[in]	file Pointer to the source file name
- * @param[in]    line assert_param error line source number
- * @return		None
- *******************************************************************************/
-void check_failed(uint8_t *file, uint32_t line)
-{
-    /* User can add his own implementation to report the file name and line number,
-ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-
-    /* Infinite loop */
-    while(1);
-}
-#endif
 
 /**
  * @}
