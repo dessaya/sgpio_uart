@@ -126,7 +126,7 @@ int c_entry(void)
     uartConfig(UART_USB, 115200);  // UART2 on USB DEBUG
     uartConfig(UART_GPIO, 9600); // UART0 on GPIO1(TX) GPIO2(RX)
 
-    printf("board init OK\n");
+    printf("board init OK\n\r");
 
     /* Initialize UART Configuration parameter structure to default state:
      * Baudrate = 9600bps
@@ -142,12 +142,21 @@ int c_entry(void)
     SGPIO_UART_Tx_Init(mySGPIO.TxPin, mySGPIO.TxSlice);
     SGPIO_UART_Rx_Init(mySGPIO.RxPin, mySGPIO.RxSlice);
 
-    printf("SGPIO init OK\n");
+    printf("SGPIO init OK\n\r");
+
+    // puentear con cables GPIO1 <-> T_FIL3 y GPIO2 <-> T_FIL2
+
+    // enviamos "Hola!" mediante SGPIO, y mediante el puenteo llega a UART_GPIO
+    uint8_t hello[] = "Hola!\n\r";
+    SGPIO_UART_Send(mySGPIO.TxSlice, hello, sizeof(hello));
+
+    // leemos UART_GPIO y escribimos en UART_USB
+    readGPIOAndPrint();
+
+    // de aca para abajo deja de funcionar
 
     // print welcome screen
     print_menu(mySGPIO.TxSlice);
-
-    readGPIOAndPrint();
 
     //Enable SGPIO UART Rx
     SGPIO_UART_Setmode(mySGPIO.RxSlice, ENABLE);
